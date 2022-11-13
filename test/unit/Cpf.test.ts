@@ -1,4 +1,4 @@
-import Cpf from "../src/domain/entity/Cpf";
+import Cpf from "../../src/domain/entity/Cpf";
 
 const validCpfs = [
     "867.985.490-55",

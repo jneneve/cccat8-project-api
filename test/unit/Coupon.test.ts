@@ -1,4 +1,4 @@
-import Coupon from "../src/domain/entity/Coupon";
+import Coupon from "../../src/domain/entity/Coupon";
 
 test("it should create a discount coupon without expiration", function () {
     const coupon = new Coupon("VALE20", 20);

@@ -1,4 +1,4 @@
-import Dimension from "../src/domain/entity/Dimension";
+import Dimension from "../../src/domain/entity/Dimension";
 
 test("it should calculate the volume", function () {
     const dimension = new Dimension(100, 30, 10, 3);

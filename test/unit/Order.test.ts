@@ -1,7 +1,8 @@
-import Coupon from "../src/domain/entity/Coupon";
-import Dimension from "../src/domain/entity/Dimension";
-import Item from "../src/domain/entity/Item";
-import Order from "../src/domain/entity/Order";
+import Coupon from "../../src/domain/entity/Coupon";
+import Dimension from "../../src/domain/entity/Dimension";
+import Item from "../../src/domain/entity/Item";
+import Order from "../../src/domain/entity/Order";
+
 
 test("it should not create a order with invalid cpf", function () {
    expect(() => new Order("553.852.760-300")).toThrow(new Error("Invalid cpf!"));
@@ -66,6 +67,7 @@ test("it should not create a item from order with negative quantity", function (
 test("it should create a order with freight", function () {
    const order = new Order("802.209.960-08");
    order.addItem(new Item(1, "Guitarra", 1000, new Dimension(100, 30, 10, 3)), 1);
+   order.freight = 30;
    const total = order.getTotal();
    expect(total).toBe(1030);
 });

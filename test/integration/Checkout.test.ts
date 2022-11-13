@@ -1,9 +1,10 @@
-import Checkout from "../src/application/Checkout";
-import GetOrdersByCpf from "../src/application/GetOrdersByCpf";
-import Coupon from "../src/domain/entity/Coupon";
-import Dimension from "../src/domain/entity/Dimension";
-import Item from "../src/domain/entity/Item";
-import MemoryRespositoryFactory from "../src/infra/factory/MemoryRepositoryFactory";
+import Checkout from "../../src/application/Checkout";
+import GetOrdersByCpf from "../../src/application/GetOrdersByCpf";
+import Coupon from "../../src/domain/entity/Coupon";
+import Dimension from "../../src/domain/entity/Dimension";
+import Item from "../../src/domain/entity/Item";
+import MemoryRespositoryFactory from "../../src/infra/factory/MemoryRepositoryFactory";
+
 
 test("it should make the order", async function () {
     const repositoryFactory = new MemoryRespositoryFactory();

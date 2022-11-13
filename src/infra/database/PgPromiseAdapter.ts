@@ -5,7 +5,7 @@ export default class PgPromiseAdapter implements Connection {
     pgp: any;
 
     constructor () {
-        this.pgp = pgp()("postgres://postgres:1234@localhost:5432/app")
+        this.pgp = pgp()("postgres://postgres:1234@localhost:5432/cccat8")
     }
 
     async close (): Promise<void> {

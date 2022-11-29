@@ -9,7 +9,7 @@ export default class ItemRepositoryDatabase implements ItemRepository {
     }
 
     async getItem (idItem: number): Promise<Item> {
-        const [itemData] = await this.connection.query("select * from item where id_item = $1", [idItem]);
+        const [itemData] = await this.connection.query("select * from cccat8.item where id_item = $1", [idItem]);
         return new Item(
             itemData.id_item, 
             itemData.description, 

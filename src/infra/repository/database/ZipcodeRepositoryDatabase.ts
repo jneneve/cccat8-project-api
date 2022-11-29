@@ -13,7 +13,7 @@ export default class ZipcodeRepositoryDatabase implements ZipcodeRepository {
     }
 
     async getByCode (code: string): Promise<Zipcode> {
-        const [zipcodeData] = await this.connection.query("select * from zipcode where code = $1", [code]);
+        const [zipcodeData] = await this.connection.query("select * from cccat8.zipcode where code = $1", [code]);
         if (!zipcodeData) throw new Error("Zipcode not found");
         const zipcode = new Zipcode(
             zipcodeData.code, 

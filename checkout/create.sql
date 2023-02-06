@@ -1,3 +1,4 @@
+drop table if exists cccat8.stock_entry;
 drop table if exists cccat8.order_item;
 drop table if exists cccat8.order;
 drop table if exists cccat8.coupon;
@@ -53,4 +54,12 @@ create table cccat8.coupon (
 	code text primary key,
 	percentage integer,
 	expire_date timestamp
+);
+
+insert into cccat8.coupon (code, percentage, expire_date) values ('VALE20', 20, '2022-12-10T10:00:00');
+
+create table cccat8.stock_entry (
+	id_item integer references cccat8.item (id_item),
+	operation text,
+	quantity integer
 );

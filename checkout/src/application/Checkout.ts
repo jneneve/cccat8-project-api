@@ -5,6 +5,8 @@ import RepositoryFactory from "../domain/factory/RepositoryFactory";
 import CalculateFreightGateway from "./gateway/CalculateFreightGateway";
 import GetItemGateway from "./gateway/GetItemGateway";
 import DecrementStockGateway from "./gateway/DecrementStockGateway";
+import Queue from "../infra/queue/Queue";
+import OrderPlaced from "../domain/event/OrderPlaced";
 
 export default class Checkout {
 	couponRepository: CouponRepository;
@@ -14,7 +16,8 @@ export default class Checkout {
 		repositoryFactory: RepositoryFactory,
 		readonly getItemGateway: GetItemGateway,
 		readonly calculateFreightGateway: CalculateFreightGateway,
-		readonly decrementStockGateway: DecrementStockGateway
+		readonly decrementStockGateway: DecrementStockGateway,
+		readonly queue: Queue
 	) {
 		this.couponRepository = repositoryFactory.createCouponRepository();
 		this.orderRepository = repositoryFactory.createOrderRepository();
@@ -28,7 +31,6 @@ export default class Checkout {
 			const item = await this.getItemGateway.getItem(orderItem.idItem);
 			order.addItem(item, orderItem.quantity);
 			orderItems.push({ volume: item.getVolume(), density: item.getDensity(), quantity: orderItem.quantity });
-			await this.decrementStockGateway.execute(orderItem.idItem, orderItem.quantity);
 		}
 		order.freight = await this.calculateFreightGateway.calculate(orderItems, input.from, input.to);
 		if (input.coupon) {
@@ -36,6 +38,7 @@ export default class Checkout {
 			if (coupon) order.addCoupon(coupon);
 		}
 		await this.orderRepository.save(order);
+		await this.queue.publish("orderPlaced", new OrderPlaced(order));
 	}
 }
 

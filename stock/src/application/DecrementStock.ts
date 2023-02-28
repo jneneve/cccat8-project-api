@@ -7,12 +7,15 @@ export default class DecrementStock {
     }
 
     async execute (input: Input): Promise<void> {
-        console.log(input);
-        await this.stockRepository.save(new StockEntry(input.idItem, "out",  input.quantity)); 
+        console.log(new Date(), "DecrementStock");
+        for (const orderItem of input.order.orderItems) {
+            await this.stockRepository.save(new StockEntry(orderItem.idItem, "out",  orderItem.quantity)); 
+        }
     }
 }
 
 type Input = {
-    idItem: number,
-    quantity: number
+    order: {
+        orderItems: { idItem: number, quantity: number }[]
+    }
 }

@@ -56,10 +56,16 @@ create table cccat8.coupon (
 	expire_date timestamp
 );
 
-insert into cccat8.coupon (code, percentage, expire_date) values ('VALE20', 20, '2022-12-10T10:00:00');
+insert into cccat8.coupon (code, percentage, expire_date) values ('VALE20', 20, '2023-12-10T10:00:00');
 
 create table cccat8.stock_entry (
 	id_item integer references cccat8.item (id_item),
 	operation text,
 	quantity integer
+);
+
+create table cccat8.order_projection (
+	cpf text,
+	code text,
+	data jsonb
 );

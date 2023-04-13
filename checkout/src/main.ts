@@ -21,27 +21,26 @@ import GetItemHttpGateway from "./infra/gateway/GetItemHttpGateway";
 import DecrementStockHttpGateway from "./infra/gateway/DecrementStockHttpGateway";
 import RabbitMQAdapter from "./infra/queue/RabbitMQAdapter";
 import QueueController from "./infra/controller/QueueController";
+import ValidateCoupon from "./application/ValidateCoupon";
+import DatabaseRepositoryFactory from "./infra/factory/DatabaseRepositoryFactory";
+import GetOrdersByCpfQuery from "./application/query/GetOrdersByCpfQuery";
 
 async function init () {
     const connection = new PgPromiseAdapter();
-    const itemRepository = new ItemRepositoryDatabase(connection);
-    const orderRepository = new OrderRepositoryMemory();
-    const couponRepository = new CouponRepositoryMemory();
-    const repositoryFactory = new MemoryRepositoryFactory();
-    couponRepository.save(new Coupon("VALE20", 20));
-    const zipcodeRepository = new ZipcodeRepositoryDatabase(connection);
+    const repositoryFactory = new DatabaseRepositoryFactory(connection);
     const getItemGateway = new GetItemHttpGateway();
     const calculateFreightGateway = new CalculateFreightHttpGateway();
     const decrementStockGateway = new DecrementStockHttpGateway();
-    const preview = new Preview(couponRepository, getItemGateway, calculateFreightGateway);
+    const preview = new Preview(repositoryFactory.createCouponRepository(), getItemGateway, calculateFreightGateway);
     const queue = new RabbitMQAdapter();
     await queue.connect();
     const checkout = new Checkout(repositoryFactory, getItemGateway, calculateFreightGateway, decrementStockGateway, queue);
-    const getOrdersByCpf = new GetOrdersByCpf(orderRepository);
-    const simulateFreight = new SimulateFreight(itemRepository, zipcodeRepository);
+    const getOrdersByCpf = new GetOrdersByCpf(repositoryFactory.createOrderRepository(), getItemGateway);
+    const getOrdersByCpfQuery = new GetOrdersByCpfQuery(connection);
+    const validateCoupon = new ValidateCoupon(repositoryFactory.createCouponRepository());
     const httpServer = new ExpressAdapter();
     // const httpServer = new HapiHttp();
-    new RestController(httpServer, preview, checkout, getOrdersByCpf, simulateFreight, queue);
+    new RestController(httpServer, preview, checkout, getOrdersByCpf, validateCoupon, getOrdersByCpfQuery, queue);
     new QueueController(queue, checkout);
     httpServer.listen(3000);
 }

@@ -8,6 +8,15 @@ export default class ItemRepositoryDatabase implements ItemRepository {
 	constructor (readonly connection: Connection) {
 	}
 
+	async getItems(): Promise<Item[]> {
+		const itemsData = await this.connection.query("select * from cccat8.item", []);
+		const items: Item[] = [];
+		for (const itemData of itemsData) {
+			items.push(new Item(itemData.id_item, itemData.description, parseFloat(itemData.price), new Dimension(itemData.width, itemData.height, itemData.length, itemData.weight)));
+		}
+		return items;
+	}
+
 	async getItem(idItem: number): Promise<Item> {
 		const [itemData] = await this.connection.query("select * from cccat8.item where id_item = $1", [idItem]);
 		return new Item(itemData.id_item, itemData.description, parseFloat(itemData.price), new Dimension(itemData.width, itemData.height, itemData.length, itemData.weight));
